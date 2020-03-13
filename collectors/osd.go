@@ -396,13 +396,15 @@ type cephOSDDF struct {
 }
 
 type cephOSDPerf struct {
-	PerfInfo []struct {
-		ID    json.Number `json:"id"`
-		Stats struct {
-			CommitLatency json.Number `json:"commit_latency_ms"`
-			ApplyLatency  json.Number `json:"apply_latency_ms"`
-		} `json:"perf_stats"`
-	} `json:"osd_perf_infos"`
+	OsdStat []struct {
+		PerfInfo []struct {
+			ID    json.Number `json:"id"`
+			Stats struct {
+				CommitLatency json.Number `json:"commit_latency_ms"`
+				ApplyLatency  json.Number `json:"apply_latency_ms"`
+			} `json:"perf_stats"`
+		} `json:"osd_perf_infos"`
+	} `json:"osdstats"`
 }
 
 type cephOSDDump struct {
@@ -588,7 +590,7 @@ func (o *OSDCollector) collectOSDPerf() error {
 		return err
 	}
 
-	for _, perfStat := range osdPerf.PerfInfo {
+	for _, perfStat := range osdPerf.OsdStat.PerfInfo {
 		osdID, err := perfStat.ID.Int64()
 		if err != nil {
 			return err
